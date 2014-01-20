@@ -102,7 +102,7 @@
   }
 
   function addValidationClass(value, errors, options) {
-    options = options || {};
+    options = options || {hash: {}};
     if (errors === true || hasValidationError(value, errors)) {
       var hash = options.hash;
       hash['class'] = (hash['class'] ? hash['class'] + ' ' : '') + config.validationErrorClass;
@@ -118,17 +118,18 @@
     return createElement('form', true, extend({
       action: url,
       method: 'POST'
-    }, options.hash), options.fn(this));
+    }, (options || {hash: {}}).hash), options.fn(this));
   }
 
   /* {{input "firstname" person.name}} */
   function helperInput(name, value, options) {
+    console.log(options)
     return new Handlebars.SafeString(createElement('input', false, extend({
       name: name,
       id: name,
       value: value,
       type: 'text'
-    }, options.hash)));
+    }, (options || {hash: {}}).hash)));
   }
 
   /* {{input_validation "firstname" person.name errors}} */
@@ -148,7 +149,7 @@
       attr['for'] = input;
     }
 
-    var element = createElement('label', true, extend(attr, options.hash), body);
+    var element = createElement('label', true, extend(attr, (options || {hash: {}}).hash), body);
 
     return options.fn ? element : new Handlebars.SafeString(element);
   }
@@ -163,7 +164,7 @@
     return new Handlebars.SafeString(createElement('button', true, extend({
       name: name,
       type: 'button'
-    }, options.hash), body));
+    }, (options || {hash: {}}).hash), body));
   }
 
   /* {{submit "Submit form"}} */
@@ -171,7 +172,7 @@
     return new Handlebars.SafeString(createElement('button', true, extend({
       name: name,
       type: 'submit'
-    }, options.hash), body));
+    }, (options || {hash: {}}).hash), body));
   }
 
   /*
@@ -179,7 +180,7 @@
   {{select 'title' titles selected}}
   */
   function helperSelect(name, items, selected, options) {
-
+    options = options || {hash: {}};
     // If the selected value is an array, then convert the
     // select to a multiple select
     if (selected instanceof Array) {
@@ -211,7 +212,7 @@
     return new Handlebars.SafeString(createElement('select', true, extend({
       id: name,
       name: name
-    }, options.hash), optionsHtml));
+    }, (options || {hash: {}}).hash), optionsHtml));
   }
 
   /* {{select_validation 'title' titles person.title errors}} */
@@ -233,7 +234,7 @@
     if (!/\[\]/.test(name)) {
       attr.id = name;
     }
-    return new Handlebars.SafeString(createElement('input', false, extend(attr, options.hash)));
+    return new Handlebars.SafeString(createElement('input', false, extend(attr, (options || {hash: {}}).hash)));
   }
 
   /* {{checkbox_validation "food[]" "apples" true errors}} */
@@ -243,6 +244,7 @@
 
   /* {{radio "likes_cats" "1" true}} */
   function helperRadio(name, value, checked, options) {
+    options = options || {hash: {}};
     extend(options.hash, {
       type: 'radio',
       id: false
@@ -261,7 +263,7 @@
       name: name,
       id: name,
       type: 'file'
-    }, options.hash)));
+    }, (options || {hash: {}}).hash)));
   }
 
   /* {{file "fileupload" errors}} */
@@ -276,7 +278,7 @@
       id: name,
       value: value,
       type: 'hidden'
-    }, options.hash)));
+    }, (options || {hash: {}}).hash)));
   }
 
   /* {{password "password" "dontdothis"}} */
@@ -286,7 +288,7 @@
       id: name,
       value: value,
       type: 'password'
-    }, options.hash)));
+    }, (options || {}).hash)));
   }
 
   /* {{password_validation "password" "dontdothis" errors}} */
@@ -299,7 +301,7 @@
     return new Handlebars.SafeString(createElement('textarea', true, extend({
       name: name,
       id: name
-    }, options.hash), body));
+    }, (options || {hash: {}}).hash), body));
   }
 
   /* {{textarea_validation "text" "Here is some text" errors}} */
@@ -326,7 +328,7 @@
     var err = '';
     for(var i = 0, j = fieldErrors.length; i < j; i++) {
       err += options.fn && options.fn(fieldErrors[i]) ||
-        createElement('div', true, options.hash, fieldErrors[i]);
+        createElement('div', true, (options || {hash: {}}).hash, fieldErrors[i]);
     }
 
     return new Handlebars.SafeString(err);
